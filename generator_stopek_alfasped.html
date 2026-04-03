@@ -71,11 +71,16 @@ body { font-family: Arial, sans-serif; background: #f5f5f5; color: #333; }
     <div class="slabel">Kontakt</div>
     <div class="field">
       <label>Telefon *</label>
-      <input type="text" id="f-phone" placeholder="+48 12 345 67 89">
+      <input type="text" id="f-phone" placeholder="+48 123 456 789" maxlength="15">
     </div>
     <div class="field">
       <label>Adres e-mail *</label>
       <input type="text" id="f-email" placeholder="anna.kowalska@alfasped.pl">
+    </div>
+    <div class="field">
+      <label>LinkedIn (opcjonalne)</label>
+      <input type="text" id="f-linkedin" placeholder="https://www.linkedin.com/in/...">
+      <div class="hint">Pelny URL profilu LinkedIn</div>
     </div>
     <div class="slabel">Zdjecie (opcjonalne)</div>
     <div class="ptoggle">
@@ -96,8 +101,8 @@ body { font-family: Arial, sans-serif; background: #f5f5f5; color: #333; }
     <div class="plabel">podglad</div>
     <div class="eframe">
       <div class="echrome">
-        <span><b>Od:</b> <span id="prev-from">pracownik@alfasped.pl</span></span>
-        <span><b>Do:</b> klient@firma.pl</span>
+        <span><b>Od:</b> <span id="prev-from"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a1d1d3c0c2ced6cfc8cae1c0cdc7c0d2d1c4c58fd1cd">[email&#160;protected]</a></span></span>
+        <span><b>Do:</b> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a1cacdc8c4cfd5e1c7c8d3ccc08fd1cd">[email&#160;protected]</a></span>
       </div>
       <div class="ebody">Szanowni Panstwo,<br><br>W zalaczeniu przesylam dokumenty zgodnie z ustaleniami.</div>
       <div class="esig" id="sig-preview"><div class="pstate">Uzupelnij dane i kliknij "Wygeneruj stopke"</div></div>
@@ -117,12 +122,37 @@ body { font-family: Arial, sans-serif; background: #f5f5f5; color: #333; }
   </div>
 </div>
 
-<script type="text/javascript">
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script type="text/javascript">
 var photoMode = 'initials';
 
 function el(id) {
   return document.getElementById(id);
 }
+
+el('f-phone').addEventListener('input', function() {
+  var digits = this.value.replace(/\D/g, '');
+  if (digits.startsWith('48')) digits = digits.substring(2);
+  digits = digits.substring(0, 9);
+  var formatted = '+48';
+  if (digits.length > 0) formatted += ' ' + digits.substring(0, 3);
+  if (digits.length > 3) formatted += ' ' + digits.substring(3, 6);
+  if (digits.length > 6) formatted += ' ' + digits.substring(6, 9);
+  this.value = formatted;
+});
+
+el('f-phone').addEventListener('keydown', function(e) {
+  if (e.key === 'Backspace' && this.value === '+48') {
+    e.preventDefault();
+  }
+});
+
+el('f-phone').addEventListener('focus', function() {
+  if (!this.value) this.value = '+48 ';
+});
+
+el('f-phone').addEventListener('blur', function() {
+  if (this.value === '+48 ' || this.value === '+48') this.value = '';
+});
 
 el('btn-ini').onclick = function() {
   photoMode = 'initials';
@@ -146,13 +176,17 @@ function getInitials(name) {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
-function buildSig(name, title, phone, email, photo) {
-  var avatar = '';
+function buildSig(name, title, phone, email, photo, linkedin) {
+  var avatarInner = '';
   if (photoMode === 'photo' && photo) {
-    avatar = '<img src="' + photo + '" alt="' + name + '" width="68" height="68" style="border-radius:50%;border:2px solid #952726;display:block;object-fit:cover;">';
+    avatarInner = '<img src="' + photo + '" alt="' + name + '" width="68" height="68" style="border-radius:50%;border:2px solid #952726;display:block;object-fit:cover;">';
   } else {
-    avatar = '<table cellpadding="0" cellspacing="0" border="0"><tr><td width="68" height="68" style="width:68px;height:68px;border-radius:50%;border:2px solid #952726;background-color:#dfcbca;text-align:center;vertical-align:middle;font-size:22px;font-weight:bold;color:#952726;font-family:Georgia,serif;">' + getInitials(name) + '</td></tr></table>';
+    avatarInner = '<table cellpadding="0" cellspacing="0" border="0"><tr><td width="68" height="68" style="width:68px;height:68px;border-radius:50%;border:2px solid #952726;background-color:#dfcbca;text-align:center;vertical-align:middle;font-size:22px;font-weight:bold;color:#952726;font-family:Georgia,serif;">' + getInitials(name) + '</td></tr></table>';
   }
+
+  var avatar = linkedin
+    ? '<a href="' + linkedin + '" target="_blank" style="display:inline-block;text-decoration:none;">' + avatarInner + '</a>'
+    : avatarInner;
 
   var html = '';
   html += '<table cellpadding="0" cellspacing="0" border="0" style="font-family:Arial,sans-serif;max-width:580px;">';
@@ -181,7 +215,12 @@ function buildSig(name, title, phone, email, photo) {
   html += '<td style="padding-right:20px;vertical-align:middle;padding-bottom:4px;"><span style="font-size:12px;color:#555555;"><span style="color:#952726;font-weight:bold;">tel.</span> ' + phone + '</span></td>';
   html += '<td style="vertical-align:middle;padding-bottom:4px;"><span style="font-size:12px;"><span style="color:#952726;font-weight:bold;">e-mail</span> <a href="mailto:' + email + '" style="color:#952726;text-decoration:none;margin-left:4px;">' + email + '</a></span></td>';
   html += '</tr><tr>';
-  html += '<td colspan="2" style="vertical-align:middle;"><span style="font-size:12px;"><span style="color:#952726;font-weight:bold;">www</span> <a href="http://www.alfasped.pl" style="color:#952726;text-decoration:none;margin-left:4px;">www.alfasped.pl</a></span></td>';
+  html += '<td style="vertical-align:middle;padding-bottom:4px;padding-right:20px;"><span style="font-size:12px;"><span style="color:#952726;font-weight:bold;">www</span> <a href="http://www.alfasped.pl" style="color:#952726;text-decoration:none;margin-left:4px;">www.alfasped.pl</a></span></td>';
+  if (linkedin) {
+    html += '<td style="vertical-align:middle;padding-bottom:4px;"><span style="font-size:12px;"><span style="color:#952726;font-weight:bold;">in</span> <a href="' + linkedin + '" target="_blank" style="color:#952726;text-decoration:none;margin-left:4px;">LinkedIn</a></span></td>';
+  } else {
+    html += '<td></td>';
+  }
   html += '</tr></table></td></tr>';
 
   html += '<tr><td style="border-top:1px solid #dfcbca;padding-top:10px;padding-bottom:6px;">';
@@ -201,6 +240,7 @@ el('btn-gen').onclick = function() {
   var phone = el('f-phone').value.trim();
   var email = el('f-email').value.trim();
   var photo = el('f-photo').value.trim();
+  var linkedin = el('f-linkedin').value.trim();
 
   var ok = true;
   var fields = ['f-name', 'f-title', 'f-phone', 'f-email'];
@@ -219,7 +259,7 @@ el('btn-gen').onclick = function() {
     return;
   }
 
-  var html = buildSig(name, title, phone, email, photo);
+  var html = buildSig(name, title, phone, email, photo, linkedin);
   el('sig-preview').innerHTML = html;
   el('sig-store').innerHTML = html;
   el('prev-from').textContent = email;
@@ -243,17 +283,4 @@ el('btn-copy').onclick = function() {
   try {
     document.execCommand('copy');
     sel.removeAllRanges();
-    el('btn-copy').textContent = 'Skopiowano! Wklej w Outlooku (Ctrl+V / Cmd+V)';
-    el('btn-copy').className = 'btn-copy ok';
-    setTimeout(function() {
-      el('btn-copy').textContent = 'Kopiuj stopke do schowka';
-      el('btn-copy').className = 'btn-copy';
-    }, 4000);
-  } catch(e) {
-    sel.removeAllRanges();
-    alert('Zaznacz stopke recznie i skopiuj Ctrl+C.');
-  }
-};
-</script>
-</body>
-</html>
+    el('btn-copy').textContent = 'Skopiowano! Wklej w Outl
