@@ -106,8 +106,8 @@ body { font-family: Arial, sans-serif; background: #f5f5f5; color: #333; }
     <div class="plabel">podglad</div>
     <div class="eframe">
       <div class="echrome">
-        <span><b>Od:</b> <span id="prev-from">pracownik@alfasped.pl</span></span>
-        <span><b>Do:</b> klient@firma.pl</span>
+        <span><b>Od:</b> <span id="prev-from"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="87f7f5e6e4e8f0e9eeecc7e6ebe1e6f4f7e2e3a9f7eb">[email&#160;protected]</a></span></span>
+        <span><b>Do:</b> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="9ff4f3f6faf1ebdff9f6edf2feb1eff3">[email&#160;protected]</a></span>
       </div>
       <div class="ebody">Szanowni Panstwo,<br><br>W zalaczeniu przesylam dokumenty zgodnie z ustaleniami.</div>
       <div class="esig" id="sig-preview">
@@ -118,10 +118,10 @@ body { font-family: Arial, sans-serif; background: #f5f5f5; color: #333; }
       <h3>Jak wstawic stopke w Outlooku?</h3>
       <ol class="steps">
         <li>Kliknij <b>"Kopiuj stopke do schowka"</b> ponizej</li>
-        <li>Otworz Outlook — <b>Plik — Opcje — Poczta — Podpisy — Nowy</b></li>
-        <li>Nazwij podpis np. <i>Stopka firmowa</i></li>
-        <li>Kliknij w pole edycji i wklej (<b>Ctrl+V</b> lub <b>Cmd+V</b>)</li>
-        <li>Ustaw jako domyslny dla nowych wiadomosci — <b>Zapisz</b></li>
+        <li>Otworz Outlook — <b>Plik — Konto — Podpisy — Dodaj podpis</b></li>
+        <li>Wprowadz nazwe podpisu np. <i>Stopka firmowa</i></li>
+        <li>Wklej cala tresc stopki w pole edycji (<b>Ctrl+V</b> lub <b>Cmd+V</b>)</li>
+        <li>Kliknij <b>Zapisz</b></li>
       </ol>
       <button class="btn-copy" id="btn-copy">Kopiuj stopke do schowka</button>
     </div>
@@ -129,7 +129,7 @@ body { font-family: Arial, sans-serif; background: #f5f5f5; color: #333; }
   </div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 var photoMode = 'initials';
 
 function g(id) { return document.getElementById(id); }
@@ -296,23 +296,45 @@ g('btn-gen').addEventListener('click', function() {
 g('btn-copy').addEventListener('click', function() {
   var store = g('sig-store');
   if (!store.innerHTML) { alert('Najpierw wygeneruj stopke.'); return; }
-  var range = document.createRange();
-  range.selectNodeContents(store);
-  var sel = window.getSelection();
-  sel.removeAllRanges();
-  sel.addRange(range);
-  try {
-    document.execCommand('copy');
-    sel.removeAllRanges();
-    g('btn-copy').textContent = 'Skopiowano! Wklej w Outlooku (Ctrl+V / Cmd+V)';
-    g('btn-copy').className = 'btn-copy ok';
+
+  var htmlContent = store.innerHTML;
+  var btn = g('btn-copy');
+
+  function markDone() {
+    btn.textContent = 'Skopiowano! Wklej w Outlooku (Ctrl+V / Cmd+V)';
+    btn.className = 'btn-copy ok';
     setTimeout(function() {
-      g('btn-copy').textContent = 'Kopiuj stopke do schowka';
-      g('btn-copy').className = 'btn-copy';
+      btn.textContent = 'Kopiuj stopke do schowka';
+      btn.className = 'btn-copy';
     }, 4000);
-  } catch(e) {
+  }
+
+  function fallbackCopy() {
+    var range = document.createRange();
+    range.selectNodeContents(store);
+    var sel = window.getSelection();
     sel.removeAllRanges();
-    alert('Zaznacz stopke recznie i skopiuj Ctrl+C.');
+    sel.addRange(range);
+    try {
+      document.execCommand('copy');
+      sel.removeAllRanges();
+      markDone();
+    } catch(e) {
+      sel.removeAllRanges();
+      alert('Nie udalo sie skopiowac automatycznie. Zaznacz stopke powyzej recznie i skopiuj Ctrl+C.');
+    }
+  }
+
+  if (navigator.clipboard && window.ClipboardItem) {
+    var blob = new Blob([htmlContent], { type: 'text/html' });
+    var item = new ClipboardItem({ 'text/html': blob });
+    navigator.clipboard.write([item]).then(function() {
+      markDone();
+    }).catch(function() {
+      fallbackCopy();
+    });
+  } else {
+    fallbackCopy();
   }
 });
 </script>
