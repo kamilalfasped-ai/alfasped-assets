@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<style>
+  body { margin: 0; padding: 0; background: #fff; }
+</style>
+</head>
+<body>
+<!--
+  ============================================================
+  STOPKA E-MAIL — SZABLON DLA PRACOWNIKÓW ALFA SPED
+  ============================================================
+
+  KROK 1: Znajdź i zastąp poniższe PLACEHOLDERY swoimi danymi:
+
+    [IMIE_NAZWISKO]     → np. Anna Kowalska
+    [INICJALY]          → np. AK  (pierwsze litery imienia i nazwiska)
+    [STANOWISKO]        → np. Specjalista ds. Spedycji
+    [TELEFON]           → np. +48 12 345 67 89
+    [EMAIL]             → np. anna.kowalska@alfasped.pl
+
+  KROK 2 (opcjonalne — jeśli chcesz zdjęcie):
+    - Skontaktuj się z [OSOBA_ODPOWIEDZIALNA] aby dodać swoje zdjęcie
+    - Po otrzymaniu linku zamień sekcję "OPCJA B" na "OPCJA A" (patrz komentarze)
+
+  KROK 3: Wklej stopkę w Outlooku:
+    1. Otwórz ten plik w przeglądarce Chrome lub Edge
+    2. Zaznacz całość (Ctrl+A) i skopiuj (Ctrl+C)
+    3. W Outlooku: Plik → Opcje → Poczta → Podpisy → Nowy
+    4. Nazwij podpis np. "Stopka firmowa"
+    5. Wklej (Ctrl+V) i zapisz
+    6. Ustaw podpis jako domyślny dla nowych wiadomości i odpowiedzi
+
+  ============================================================
+-->
+
+<table cellpadding="0" cellspacing="0" border="0" style="font-family: Arial, sans-serif; max-width: 580px;">
+
+  <!-- WIERSZ 1: Zdjęcie/inicjały + Imię i stanowisko -->
+  <tr>
+    <td style="padding-bottom: 14px;">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <!-- ZDJĘCIE LUB INICJAŁY -->
+          <td style="vertical-align: middle; padding-right: 16px;">
+
+            <!--
+              OPCJA A: Ze zdjęciem
+              Odkomentuj poniższe gdy otrzymasz link do zdjęcia z SharePoint.
+              Usuń jednocześnie OPCJĘ B.
+
+              <img src="TWÓJ_LINK_DO_ZDJĘCIA_Z_SHAREPOINT"
+                   alt="[IMIE_NAZWISKO]"
+                   width="68" height="68"
+                   style="border-radius: 50%; border: 2px solid #952726;
+                          display: block; object-fit: cover;" />
+            -->
+
+            <!-- OPCJA B: Inicjały (domyślna) -->
+            <table cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <td width="68" height="68"
+                    style="width: 68px; height: 68px; border-radius: 50%;
+                           border: 2px solid #952726; background-color: #dfcbca;
+                           text-align: center; vertical-align: middle;
+                           font-size: 22px; font-weight: bold; color: #952726;
+                           font-family: Georgia, serif;">
+                  [INICJALY]
+                </td>
+              </tr>
+            </table>
+
+          </td>
+          <!-- Imię i stanowisko -->
+          <td style="vertical-align: middle;">
+            <div style="font-size: 10px; font-weight: 300; color: #a97873;
+                        letter-spacing: 2px; text-transform: uppercase; margin-bottom: 3px;">
+              Z poważaniem
+            </div>
+            <div style="font-size: 20px; font-weight: bold; color: #952726;
+                        font-family: Georgia, serif; line-height: 1.1; margin-bottom: 4px;">
+              [IMIE_NAZWISKO]
+            </div>
+            <div style="font-size: 11px; font-weight: bold; color: #666666;
+                        letter-spacing: 0.5px; text-transform: uppercase;">
+              [STANOWISKO]
+            </div>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+
+  <!-- SEPARATOR -->
+  <tr>
+    <td style="padding-bottom: 14px;">
+      <table cellpadding="0" cellspacing="0" border="0" width="100%">
+        <tr>
+          <td style="background-color: #952726; height: 1px; font-size: 0; line-height: 0;">&nbsp;</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+
+  <!-- WIERSZ 2: Logo + Nazwa firmy -->
+  <tr>
+    <td style="padding-bottom: 12px;">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td style="vertical-align: middle; padding-right: 14px;">
+            <img src="https://raw.githubusercontent.com/kamilalfasped-ai/alfasped-assets/main/alfasped_logo_1920x1080-bez%20t%C5%82a.png"
+                 alt="Alfa Sped"
+                 height="36"
+                 style="display: block; height: 36px; width: auto;" />
+            <!--
+              UWAGA DLA ADMINISTRATORA:
+              Podmień powyższy URL na stały link z SharePoint
+              po wrzuceniu pliku PNG bez tła do folderu stopek firmowych.
+              Wszyscy pracownicy będą korzystać z tego samego URL.
+            -->
+          </td>
+          <td style="vertical-align: middle; border-left: 1px solid #dfcbca; padding-left: 14px;">
+            <div style="font-size: 12px; font-weight: bold; color: #333333; margin-bottom: 2px;">
+              ALFA SPED Sp. z o. o. S.K.A.
+            </div>
+            <div style="font-size: 11px; color: #888888; font-weight: 300;">
+              30-716 Kraków, ul. Przewóz 47
+            </div>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+
+  <!-- WIERSZ 3: Dane kontaktowe -->
+  <tr>
+    <td style="padding-bottom: 12px;">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td style="padding-right: 20px; vertical-align: middle; padding-bottom: 4px;">
+            <span style="font-size: 12px; color: #555555;">
+              <span style="color: #952726; font-weight: bold;">tel.</span>
+              [TELEFON]
+            </span>
+          </td>
+          <td style="vertical-align: middle; padding-bottom: 4px;">
+            <span style="font-size: 12px;">
+              <span style="color: #952726; font-weight: bold;">e-mail</span>
+              <a href="/cdn-cgi/l/email-protection#653e2028242c2938" style="color: #952726; text-decoration: none; margin-left: 4px;">
+                [EMAIL]
+              </a>
+            </span>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2" style="vertical-align: middle; padding-bottom: 2px;">
+            <span style="font-size: 12px;">
+              <span style="color: #952726; font-weight: bold;">www</span>
+              <a href="http://www.alfasped.pl"
+                 style="color: #952726; text-decoration: none; margin-left: 4px;">
+                www.alfasped.pl
+              </a>
+            </span>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+
+  <!-- WIERSZ 4: Dane rejestrowe -->
+  <tr>
+    <td style="border-top: 1px solid #dfcbca; padding-top: 10px; padding-bottom: 6px;">
+      <div style="font-size: 10px; color: #aaaaaa; line-height: 1.7; font-weight: 300;">
+        Sąd Rejonowy dla Miasta Kraków-Śródmieście w Krakowie, XI Wydział Gospodarczy KRS<br>
+        <strong style="font-weight: 400; color: #888888;">KRS:</strong> 0000442189 &nbsp;|&nbsp;
+        <strong style="font-weight: 400; color: #888888;">NIP:</strong> 6792834154 &nbsp;|&nbsp;
+        <strong style="font-weight: 400; color: #888888;">REGON:</strong> 120001038 &nbsp;|&nbsp;
+        <strong style="font-weight: 400; color: #888888;">BDO:</strong> 000000175<br>
+        Kapitał zakładowy 362 400,00 zł — w całości opłacony
+      </div>
+    </td>
+  </tr>
+
+  <!-- WIERSZ 5: Komunikat ekologiczny -->
+  <tr>
+    <td style="padding-top: 4px;">
+      <div style="font-size: 10px; color: #bbbbbb; font-style: italic; font-weight: 300;">
+        🌱 Zanim wydrukujesz ten e-mail, pomyśl o środowisku
+      </div>
+    </td>
+  </tr>
+
+</table>
+<sc

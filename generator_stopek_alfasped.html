@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Generator Stopek — Alfa Sped</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Arial, sans-serif;
+    background: #f5f5f5;
+    color: #333;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  .header {
+    background: #952726;
+    color: #fff;
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .header img {
+    height: 32px;
+    filter: brightness(0) invert(1);
+  }
+
+  .header-text h1 {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+  }
+
+  .header-text p {
+    font-size: 12px;
+    opacity: 0.75;
+    margin-top: 2px;
+  }
+
+  .main {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    gap: 0;
+    min-height: calc(100vh - 72px);
+  }
+
+  .panel-left {
+    background: #fff;
+    border-right: 1px solid #e0e0e0;
+    padding: 24px;
+    overflow-y: auto;
+  }
+
+  .panel-right {
+    padding: 24px;
+    background: #f5f5f5;
+  }
+
+  .section-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: #952726;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    margin-top: 20px;
+  }
+
+  .section-label:first-child { margin-top: 0; }
+
+  .field {
+    margin-bottom: 12px;
+  }
+
+  .field label {
+    display: block;
+    font-size: 11px;
+    color: #888;
+    margin-bottom: 4px;
+    font-weight: 400;
+  }
+
+  .field input {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 13px;
+    font-family: Arial, sans-serif;
+    color: #333;
+    background: #fff;
+    transition: border-color 0.15s;
+    outline: none;
+  }
+
+  .field input:focus {
+    border-color: #952726;
+  }
+
+  .field input.error {
+    border-color: #e53935;
+  }
+
+  .field .hint {
+    font-size: 10px;
+    color: #bbb;
+    margin-top: 3px;
+  }
+
+  .photo-toggle {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .photo-toggle button {
+    flex: 1;
+    padding: 7px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #fff;
+    font-size: 12px;
+    color: #666;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+    transition: all 0.15s;
+  }
+
+  .photo-toggle button.active {
+    background: #952726;
+    color: #fff;
+    border-color: #952726;
+    font-weight: 700;
+  }
+
+  .photo-field { display: none; }
+  .photo-field.visible { display: block; }
+
+  .btn-generate {
+    width: 100%;
+    padding: 12px;
+    background: #952726;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+    margin-top: 20px;
+    letter-spacing: 0.3px;
+    transition: background 0.15s;
+  }
+
+  .btn-generate:hover { background: #7a1e1e; }
+
+  .preview-label {
+    font-size: 10px;
+    color: #aaa;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .email-frame {
+    background: #fff;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+
+  .email-chrome {
+    background: #f0f0f0;
+    padding: 8px 16px;
+    border-bottom: 1px solid #e0e0e0;
+    font-size: 11px;
+    color: #888;
+    display: flex;
+    gap: 16px;
+  }
+
+  .email-body-text {
+    padding: 14px 20px 6px;
+    font-size: 13px;
+    color: #777;
+    line-height: 1.7;
+    font-family: Arial, sans-serif;
+  }
+
+  .sig-preview-area {
+    padding: 4px 20px 20px;
+  }
+
+  .copy-section {
+    background: #fff;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    padding: 16px 20px;
+  }
+
+  .copy-section h3 {
+    font-size: 13px;
+    color: #333;
+    margin-bottom: 12px;
+    font-weight: 700;
+  }
+
+  .steps {
+    list-style: none;
+    counter-reset: steps;
+    margin-bottom: 14px;
+  }
+
+  .steps li {
+    counter-increment: steps;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 12px;
+    color: #555;
+    margin-bottom: 8px;
+    line-height: 1.5;
+  }
+
+  .steps li::before {
+    content: counter(steps);
+    background: #952726;
+    color: #fff;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .btn-copy {
+    padding: 9px 20px;
+    background: #952726;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+    transition: background 0.15s;
+  }
+
+  .btn-copy:hover { background: #7a1e1e; }
+  .btn-copy.copied { background: #2e7d32; }
+
+  .placeholder-state {
+    padding: 40px 20px;
+    text-align: center;
+    color: #bbb;
+    font-size: 13px;
+  }
+
+  .placeholder-state .icon {
+    font-size: 32px;
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  @media (max-width: 700px) {
+    .main { grid-template-columns: 1fr; }
+    .panel-left { border-right: none; border-bottom: 1px solid #e0e0e0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <img src="https://raw.githubusercontent.com/kamilalfasped-ai/alfasped-assets/main/alfasped_logo_1920x1080-bez%20t%C5%82a.png" alt="Alfa Sped"
+       onerror="this.style.display='none'">
+  <div class="header-text">
+    <h1>Generator stopek e-mail</h1>
+    <p>ALFA SPED Sp. z o. o. S.K.A.</p>
+  </div>
+</div>
+
+<div class="main">
+
+  <div class="panel-left">
+
+    <div class="section-label">Dane osobowe</div>
+
+    <div class="field">
+      <label>Imię i nazwisko *</label>
+      <input type="text" id="f-name" placeholder="np. Anna Kowalska" oninput="liveUpdate()">
+    </div>
+
+    <div class="field">
+      <label>Stanowisko *</label>
+      <input type="text" id="f-title" placeholder="np. Specjalista ds. Spedycji" oninput="liveUpdate()">
+    </div>
+
+    <div class="section-label">Kontakt</div>
+
+    <div class="field">
+      <label>Telefon *</label>
+      <input type="text" id="f-phone" placeholder="+48 12 345 67 89" oninput="liveUpdate()">
+    </div>
+
+    <div class="field">
+      <label>Adres e-mail *</label>
+      <input type="text" id="f-email" placeholder="anna.kowalska@alfasped.pl" oninput="liveUpdate()">
+    </div>
+
+    <div class="section-label">Zdjęcie (opcjonalne)</div>
+
+    <div class="photo-toggle">
+      <button class="active" id="btn-initials" onclick="setPhotoMode('initials')">Inicjały</button>
+      <button id="btn-photo" onclick="setPhotoMode('photo')">Link do zdjęcia</button>
+    </div>
+
+    <div class="photo-field" id="photo-url-field">
+      <div class="field">
+        <label>URL zdjęcia (SharePoint)</label>
+        <input type="text" id="f-photo" placeholder="https://..." oninput="liveUpdate()">
+        <div class="hint">Link do pliku PNG bez tła z SharePoint</div>
+      </div>
+    </div>
+
+    <button class="btn-generate" onclick="generateSignature()">Wygeneruj stopkę</button>
+
+  </div>
+
+  <div class="panel-right">
+
+    <div class="preview-label">podgląd na żywo</div>
+
+    <div class="email-frame">
+      <div class="email-chrome">
+        <span><strong>Od:</strong> <span id="preview-from"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="50202231333f273e393b10313c3631232035347e203c">[email&#160;protected]</a></span></span>
+        <span><strong>Do:</strong> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="016a6d68646f75416768736c602f716d">[email&#160;protected]</a></span>
+      </div>
+      <div class="email-body-text">
+        Szanowni Państwo,<br><br>
+        W załączeniu przesyłam dokumenty zgodnie z ustaleniami.
+      </div>
+      <div class="sig-preview-area" id="sig-preview">
+        <div class="placeholder-state">
+          <span class="icon">✍️</span>
+          Uzupełnij dane po lewej stronie
+        </div>
+      </div>
+    </div>
+
+    <div class="copy-section" id="copy-section" style="display:none;">
+      <h3>Jak wstawić stopkę w Outlooku?</h3>
+      <ol class="steps">
+        <li>Kliknij przycisk <strong>"Kopiuj stopkę"</strong> poniżej</li>
+        <li>Otwórz Outlook → <strong>Plik → Opcje → Poczta → Podpisy</strong></li>
+        <li>Kliknij <strong>"Nowy"</strong>, nadaj nazwę np. <em>Stopka firmowa</em></li>
+        <li>Kliknij w pole edycji podpisu i wklej (<strong>Ctrl+V</strong> / <strong>Cmd+V</strong>)</li>
+        <li>Ustaw jako domyślny dla nowych wiadomości i odpowiedzi → <strong>Zapisz</strong></li>
+      </ol>
+      <button class="btn-copy" id="btn-copy" onclick="copySignature()">Kopiuj stopkę do schowka</button>
+    </div>
+
+  </div>
+</div>
+
+<div id="sig-html-store" style="display:none;"></div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+var photoMode = 'initials';
+var lastHTML = '';
+
+function setPhotoMode(mode) {
+  photoMode = mode;
+  document.getElementById('btn-initials').className = mode === 'initials' ? 'active' : '';
+  document.getElementById('btn-photo').className = mode === 'photo' ? 'active' : '';
+  document.getElementById('photo-url-field').className = 'photo-field' + (mode === 'photo' ? ' visible' : '');
+  liveUpdate();
+}
+
+function getInitials(name) {
+  if (!name) return '??';
+  var parts = name.trim().split(' ').filter(Boolean);
+  if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+}
+
+function buildSignatureHTML(data) {
+  var avatarHTML = '';
+  if (photoMode === 'photo' && data.photo) {
+    avatarHTML = '<img src="' + data.photo + '" alt="' + data.name + '" width="68" height="68" style="border-radius:50%;border:2px solid #952726;display:block;object-fit:cover;" />';
+  } else {
+    avatarHTML = '<table cellpadding="0" cellspacing="0" border="0"><tr><td width="68" height="68" style="width:68px;height:68px;border-radius:50%;border:2px solid #952726;background-color:#dfcbca;text-align:center;vertical-align:middle;font-size:22px;font-weight:bold;color:#952726;font-family:Georgia,serif;">' + getInitials(data.name) + '</td></tr></table>';
+  }
+
+  return '<table cellpadding="0" cellspacing="0" border="0" style="font-family:Arial,sans-serif;max-width:580px;">' +
+    '<tr><td style="padding-bottom:14px;">' +
+      '<table cellpadding="0" cellspacing="0" border="0"><tr>' +
+        '<td style="vertical-align:middle;padding-right:16px;">' + avatarHTML + '</td>' +
+        '<td style="vertical-align:middle;">' +
+          '<div style="font-size:10px;font-weight:300;color:#a97873;letter-spacing:2px;text-transform:uppercase;margin-bottom:3px;">Z poważaniem</div>' +
+          '<div style="font-size:20px;font-weight:bold;color:#952726;font-family:Georgia,serif;line-height:1.1;margin-bottom:4px;">' + data.name + '</div>' +
+          '<div style="font-size:11px;font-weight:bold;color:#666666;letter-spacing:0.5px;text-transform:uppercase;">' + data.title + '</div>' +
+        '</td>' +
+      '</tr></table>' +
+    '</td></tr>' +
+
+    '<tr><td style="padding-bottom:14px;">' +
+      '<table cellpadding="0" cellspacing="0" border="0" width="100%"><tr>' +
+        '<td style="background-color:#952726;height:1px;font-size:0;line-height:0;">&nbsp;</td>' +
+      '</tr></table>' +
+    '</td></tr>' +
+
+    '<tr><td style="padding-bottom:12px;">' +
+      '<table cellpadding="0" cellspacing="0" border="0"><tr>' +
+        '<td style="vertical-align:middle;padding-right:14px;">' +
+          '<img src="https://raw.githubusercontent.com/kamilalfasped-ai/alfasped-assets/main/alfasped_logo_1920x1080-bez%20t%C5%82a.png" alt="Alfa Sped" height="36" style="display:block;height:36px;width:auto;" />' +
+        '</td>' +
+        '<td style="vertical-align:middle;border-left:1px solid #dfcbca;padding-left:14px;">' +
+          '<div style="font-size:12px;font-weight:bold;color:#333333;margin-bottom:2px;">ALFA SPED Sp. z o. o. S.K.A.</div>' +
+          '<div style="font-size:11px;color:#888888;font-weight:300;">30-716 Kraków, ul. Przewóz 47</div>' +
+        '</td>' +
+      '</tr></table>' +
+    '</td></tr>' +
+
+    '<tr><td style="padding-bottom:12px;">' +
+      '<table cellpadding="0" cellspacing="0" border="0"><tr>' +
+        '<td style="padding-right:20px;vertical-align:middle;padding-bottom:4px;">' +
+          '<span style="font-size:12px;color:#555555;"><span style="color:#952726;font-weight:bold;">tel.</span> ' + data.phone + '</span>' +
+        '</td>' +
+        '<td style="vertical-align:middle;padding-bottom:4px;">' +
+          '<span style="font-size:12px;"><span style="color:#952726;font-weight:bold;">e-mail</span> <a href="mailto:' + data.email + '" style="color:#952726;text-decoration:none;margin-left:4px;">' + data.email + '</a></span>' +
+        '</td>' +
+      '</tr><tr>' +
+        '<td colspan="2" style="vertical-align:middle;padding-bottom:2px;">' +
+          '<span style="font-size:12px;"><span style="color:#952726;font-weight:bold;">www</span> <a href="http://www.alfasped.pl" style="color:#952726;text-decoration:none;margin-left:4px;">www.alfasped.pl</a></span>' +
+        '</td>' +
+      '</tr></table>' +
+    '</td></tr>' +
+
+    '<tr><td style="border-top:1px solid #dfcbca;padding-top:10px;padding-bottom:6px;">' +
+      '<div style="font-size:10px;color:#aaaaaa;line-height:1.7;font-weight:300;">' +
+        'Sąd Rejonowy dla Miasta Kraków-Śródmieście w Krakowie, XI Wydział Gospodarczy KRS<br>' +
+        '<strong style="font-weight:400;color:#888888;">KRS:</strong> 0000442189 &nbsp;|&nbsp; ' +
+        '<strong style="font-weight:400;color:#888888;">NIP:</strong> 6792834154 &nbsp;|&nbsp; ' +
+        '<strong style="font-weight:400;color:#888888;">REGON:</strong> 120001038 &nbsp;|&nbsp; ' +
+        '<strong style="font-weight:400;color:#888888;">BDO:</strong> 000000175<br>' +
+        'Kapitał zakładowy 362 400,00 zł — w całości opłacony' +
+      '</div>' +
+    '</td></tr>' +
+
+    '<tr><td style="padding-top:4px;">' +
+      '<div style="font-size:10px;color:#bbbbbb;font-style:italic;font-weight:300;">🌱 Zanim wydrukujesz ten e-mail, pomyśl o środowisku</div>' +
+    '</td></tr>' +
+    '</table>';
+}
+
+function getData() {
+  return {
+    name: document.getElementById('f-name').value.trim(),
+    title: document.getElementById('f-title').value.trim(),
+    phone: document.getElementById('f-phone').value.trim(),
+    email: document.getElementById('f-email').value.trim(),
+    photo: document.getElementById('f-photo').value.trim()
+  };
+}
+
+function liveUpdate() {
+  var d = getData();
+  if (!d.name && !d.title && !d.phone && !d.email) {
+    document.getElementById('sig-preview').innerHTML = '<div class="placeholder-state"><span class="icon" style="font-size:32px;display:block;margin-bottom:10px;">✍️</span>Uzupełnij dane po lewej stronie</div>';
+    document.getElementById('preview-from').textContent = 'pracownik@alfasped.pl';
+    document.getElementById('copy-section').style.display = 'none';
+    return;
+  }
+  var previewName = d.name || '[Imię Nazwisko]';
+  var previewTitle = d.title || '[Stanowisko]';
+  var previewPhone = d.phone || '[Telefon]';
+  var previewEmail = d.email || '[E-mail]';
+  var previewData = { name: previewName, title: previewTitle, phone: previewPhone, email: previewEmail, photo: d.photo };
+  var html = buildSignatureHTML(previewData);
+  document.getElementById('sig-preview').innerHTML = html;
+  document.getElementById('preview-from').textContent = d.email || 'pracownik@alfasped.pl';
+}
+
+function generateSignature() {
+  var d = getData();
+  var errors = false;
+
+  ['f-name','f-title','f-phone','f-email'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (!el.value.trim()) {
+      el.className = 'error';
+      errors = true;
+    } else {
+      el.className = '';
+    }
+  });
+
+  if (errors) {
+    alert('Uzupełnij wszystkie wymagane pola (oznaczone *)');
+    return;
+  }
+
+  var html = buildSignatureHTML(d);
+  lastHTML = html;
+  document.getElementById('sig-html-store').innerHTML = html;
+  document.getElementById('sig-preview').innerHTML = html;
+  document.getElementById('copy-section').style.display = 'block';
+  document.getElementById('btn-copy').textContent = 'Kopiuj stopkę do schowka';
+  document.getElementById('btn-copy').className = 'btn-copy';
+
+  document.getElementById('copy-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function copySignature() {
+  var el = document.getElementById('sig-html-store');
+  if (!el.innerHTML) {
+    alert('Najpierw wygeneruj stopkę.');
+    return;
+  }
+
+  var range = document.createRange();
+  range.selectNodeContents(el);
+  var sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+
+  try {
+    document.execCommand('copy');
+    sel.removeAllRanges();
+    var btn = document.getElementById('btn-copy');
+    btn.textContent = '✓ Skopiowano! Teraz
