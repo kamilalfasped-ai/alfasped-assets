@@ -63,7 +63,7 @@ body { font-family: Arial, sans-serif; background: #f5f5f5; color: #333; }
 
     <div class="slabel">Dane osobowe</div>
     <div class="field">
-      <label>Imie i nazwisko *</label>
+      <label>Imię i nazwisko *</label>
       <input type="text" id="f-name" placeholder="np. Anna Kowalska">
     </div>
     <div class="field">
@@ -77,7 +77,7 @@ body { font-family: Arial, sans-serif; background: #f5f5f5; color: #333; }
       <input type="text" id="f-phone" placeholder="+48 ___ ___ ___" maxlength="15">
     </div>
     <div class="field">
-      <label>Adres e-mail (uzupelnia sie automatycznie)</label>
+      <label>Adres e-mail (uzupełnia się automatycznie)</label>
       <input type="text" id="f-email" placeholder="imie.nazwisko@alfasped.pl" readonly>
     </div>
     <div class="field">
@@ -85,45 +85,45 @@ body { font-family: Arial, sans-serif; background: #f5f5f5; color: #333; }
       <input type="text" id="f-linkedin" placeholder="https://www.linkedin.com/in/...">
     </div>
 
-    <div class="slabel">Zdjecie (opcjonalne)</div>
+    <div class="slabel">Zdjęcie (opcjonalne)</div>
     <div class="ptoggle">
-      <button id="btn-ini" class="on">Inicjaly</button>
-      <button id="btn-pho">Link do zdjecia</button>
+      <button id="btn-ini" class="on">Inicjały</button>
+      <button id="btn-pho">Link do zdjęcia</button>
     </div>
     <div class="photofield" id="photofield">
       <div class="field">
-        <label>URL zdjecia</label>
+        <label>URL zdjęcia</label>
         <input type="text" id="f-photo" placeholder="https://...">
-        <div class="hint">PNG bez tla, min. 200x200px</div>
+        <div class="hint">PNG bez tła, min. 200x200px</div>
       </div>
     </div>
 
-    <button class="btn-gen" id="btn-gen">Wygeneruj stopke</button>
+    <button class="btn-gen" id="btn-gen">Wygeneruj stopkę</button>
 
   </div>
 
   <div class="right">
-    <div class="plabel">podglad</div>
+    <div class="plabel">podgląd</div>
     <div class="eframe">
       <div class="echrome">
         <span><b>Od:</b> <span id="prev-from"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="87f7f5e6e4e8f0e9eeecc7e6ebe1e6f4f7e2e3a9f7eb">[email&#160;protected]</a></span></span>
         <span><b>Do:</b> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="9ff4f3f6faf1ebdff9f6edf2feb1eff3">[email&#160;protected]</a></span>
       </div>
-      <div class="ebody">Szanowni Panstwo,<br><br>W zalaczeniu przesylam dokumenty zgodnie z ustaleniami.</div>
+      <div class="ebody">Szanowni Państwo,<br><br>W załączeniu przesyłam dokumenty zgodnie z ustaleniami.</div>
       <div class="esig" id="sig-preview">
-        <div class="pstate">Uzupelnij dane i kliknij "Wygeneruj stopke"</div>
+        <div class="pstate">Uzupełnij dane i kliknij "Wygeneruj stopkę"</div>
       </div>
     </div>
     <div class="cbox" id="cbox">
-      <h3>Jak wstawic stopke w Outlooku?</h3>
+      <h3>Jak wstawić stopkę w Outlooku?</h3>
       <ol class="steps">
-        <li>Kliknij <b>"Kopiuj stopke do schowka"</b> ponizej</li>
-        <li>Otworz Outlook — <b>Plik — Konto — Podpisy — Dodaj podpis</b></li>
-        <li>Wprowadz nazwe podpisu np. <i>Stopka firmowa</i></li>
-        <li>Wklej cala tresc stopki w pole edycji (<b>Ctrl+V</b> lub <b>Cmd+V</b>)</li>
+        <li>Kliknij <b>"Kopiuj stopkę do schowka"</b> ponizej</li>
+        <li>Otwórz Outlook — <b>Plik — Konto — Podpisy — Dodaj podpis</b></li>
+        <li>Wprowadź nazwę podpisu np. <i>Stopka firmowa</i></li>
+        <li>Wklej całą treść stopki w pole edycji (<b>Ctrl+V</b> lub <b>Cmd+V</b>)</li>
         <li>Kliknij <b>Zapisz</b></li>
       </ol>
-      <button class="btn-copy" id="btn-copy">Kopiuj stopke do schowka</button>
+      <button class="btn-copy" id="btn-copy">Kopiuj stopkę do schowka</button>
     </div>
     <div id="sig-store"></div>
   </div>
@@ -218,7 +218,7 @@ function buildSig(name, title, phone, email, photo, linkedin) {
     + '<table cellpadding="0" cellspacing="0" border="0"><tr>'
     + '<td style="vertical-align:middle;padding-right:16px;">' + avatar + '</td>'
     + '<td style="vertical-align:middle;">'
-    + '<div style="font-size:10px;color:#a97873;letter-spacing:2px;text-transform:uppercase;margin-bottom:3px;">Z powazaniem</div>'
+    + '<div style="font-size:10px;color:#a97873;letter-spacing:2px;text-transform:uppercase;margin-bottom:3px;">Z poważaniem</div>'
     + '<div style="font-size:20px;font-weight:bold;color:#952726;font-family:Georgia,serif;line-height:1.1;margin-bottom:4px;">' + name + '</div>'
     + '<div style="font-size:11px;font-weight:bold;color:#666666;letter-spacing:0.5px;text-transform:uppercase;">' + title + '</div>'
     + '</td></tr></table></td></tr>'
@@ -235,7 +235,7 @@ function buildSig(name, title, phone, email, photo, linkedin) {
     + '</td>'
     + '<td style="vertical-align:middle;border-left:1px solid #dfcbca;padding-left:14px;">'
     + '<div style="font-size:12px;font-weight:bold;color:#333333;margin-bottom:2px;">ALFA SPED Sp. z o. o. S.K.A.</div>'
-    + '<div style="font-size:11px;color:#888888;">30-716 Krakow, ul. Przewoz 47</div>'
+    + '<div style="font-size:11px;color:#888888;">30-716 Kraków, ul. Przewóz 47</div>'
     + '</td></tr></table></td></tr>'
 
     + '<tr><td style="padding-bottom:12px;">'
@@ -254,16 +254,16 @@ function buildSig(name, title, phone, email, photo, linkedin) {
 
     + '<tr><td style="border-top:1px solid #dfcbca;padding-top:10px;padding-bottom:6px;">'
     + '<div style="font-size:10px;color:#aaaaaa;line-height:1.7;">'
-    + 'Sad Rejonowy dla Miasta Krakow-Srodmiescie w Krakowie, XI Wydzial Gospodarczy KRS<br>'
+    + 'Sąd Rejonowy dla Miasta Kraków-Śródmieście w Krakowie, XI Wydział Gospodarczy KRS<br>'
     + '<b style="font-weight:400;color:#888888;">KRS:</b> 0000442189 &nbsp;|&nbsp; '
     + '<b style="font-weight:400;color:#888888;">NIP:</b> 6792834154 &nbsp;|&nbsp; '
     + '<b style="font-weight:400;color:#888888;">REGON:</b> 120001038 &nbsp;|&nbsp; '
     + '<b style="font-weight:400;color:#888888;">BDO:</b> 000000175<br>'
-    + 'Kapital zakladowy 362 400,00 zl - w calosci oplacony'
+    + 'Kapitał zakładowy 362 400,00 zł — w całości opłacony'
     + '</div></td></tr>'
 
     + '<tr><td style="padding-top:4px;">'
-    + '<div style="font-size:10px;color:#bbbbbb;font-style:italic;">Zanim wydrukujesz ten e-mail, pomysl o srodowisku</div>'
+    + '<div style="font-size:10px;color:#bbbbbb;font-style:italic;">Zanim wydrukujesz ten e-mail, pomyśl o środowisku</div>'
     + '</td></tr>'
     + '</table>';
 }
@@ -281,21 +281,21 @@ g('btn-gen').addEventListener('click', function() {
   if (!title) { g('f-title').className = 'err'; ok = false; } else { g('f-title').className = ''; }
   if (!phone || phone === '+48') { g('f-phone').className = 'err'; ok = false; } else { g('f-phone').className = ''; }
 
-  if (!ok) { alert('Uzupelnij wszystkie wymagane pola (oznaczone *).'); return; }
+  if (!ok) { alert('Uzupełnij wszystkie wymagane pola (oznaczone *).'); return; }
 
   var html = buildSig(name, title, phone, email, photo, linkedin);
   g('sig-preview').innerHTML = html;
   g('sig-store').innerHTML = html;
   g('prev-from').textContent = email || 'pracownik@alfasped.pl';
   g('cbox').style.display = 'block';
-  g('btn-copy').textContent = 'Kopiuj stopke do schowka';
+  g('btn-copy').textContent = 'Kopiuj stopkę do schowka';
   g('btn-copy').className = 'btn-copy';
   g('cbox').scrollIntoView({ behavior: 'smooth', block: 'start' });
 });
 
 g('btn-copy').addEventListener('click', function() {
   var store = g('sig-store');
-  if (!store.innerHTML) { alert('Najpierw wygeneruj stopke.'); return; }
+  if (!store.innerHTML) { alert('Najpierw wygeneruj stopkę.'); return; }
 
   var htmlContent = store.innerHTML;
   var btn = g('btn-copy');
@@ -304,7 +304,7 @@ g('btn-copy').addEventListener('click', function() {
     btn.textContent = 'Skopiowano! Wklej w Outlooku (Ctrl+V / Cmd+V)';
     btn.className = 'btn-copy ok';
     setTimeout(function() {
-      btn.textContent = 'Kopiuj stopke do schowka';
+      btn.textContent = 'Kopiuj stopkę do schowka';
       btn.className = 'btn-copy';
     }, 4000);
   }
@@ -321,7 +321,7 @@ g('btn-copy').addEventListener('click', function() {
       markDone();
     } catch(e) {
       sel.removeAllRanges();
-      alert('Nie udalo sie skopiowac automatycznie. Zaznacz stopke powyzej recznie i skopiuj Ctrl+C.');
+      alert('Nie udało się skopiować automatycznie. Zaznacz stopkę powyżej ręcznie i skopiuj Ctrl+C.');
     }
   }
 
