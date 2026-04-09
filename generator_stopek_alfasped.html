@@ -44,6 +44,9 @@ body { font-family: Arial, sans-serif; background: #f5f5f5; color: #333; }
 .btn-copy { padding: 8px 18px; background: #952726; color: #fff; border: none; border-radius: 4px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: Arial, sans-serif; transition: background 0.15s; }
 .btn-copy:hover { background: #7a1e1e; }
 .btn-copy.ok { background: #2e7d32; }
+.itabs { display: flex; gap: 6px; margin-bottom: 12px; }
+.itab { padding: 5px 12px; border: 1px solid #ddd; border-radius: 4px; background: #fff; font-size: 12px; color: #666; cursor: pointer; font-family: Arial, sans-serif; transition: all 0.15s; }
+.itab.on { background: #952726; color: #fff; border-color: #952726; font-weight: 700; }
 #sig-store { display: none; }
 @media(max-width:680px) { .main { grid-template-columns: 1fr; } .left { border-right: none; border-bottom: 1px solid #e0e0e0; } }
 </style>
@@ -88,13 +91,16 @@ body { font-family: Arial, sans-serif; background: #f5f5f5; color: #333; }
     <div class="slabel">Zdjęcie (opcjonalne)</div>
     <div class="ptoggle">
       <button id="btn-ini" class="on">Inicjały</button>
-      <button id="btn-pho">Link do zdjęcia</button>
+      <button id="btn-pho">Wgraj zdjęcie</button>
     </div>
     <div class="photofield" id="photofield">
       <div class="field">
-        <label>URL zdjęcia</label>
-        <input type="text" id="f-photo" placeholder="https://...">
-        <div class="hint">PNG bez tła, min. 200x200px</div>
+        <label>Zdjęcie profilowe</label>
+        <input type="file" id="f-photo" accept="image/*" style="padding:6px 4px;font-size:12px;cursor:pointer;">
+        <div class="hint">JPG lub PNG, min. 200x200px — zdjęcie będzie przycięte do koła</div>
+      </div>
+      <div id="photo-preview" style="display:none;margin-top:8px;">
+        <img id="photo-preview-img" width="60" height="60" style="border-radius:50%;border:2px solid #952726;object-fit:cover;display:block;">
       </div>
     </div>
 
@@ -116,13 +122,30 @@ body { font-family: Arial, sans-serif; background: #f5f5f5; color: #333; }
     </div>
     <div class="cbox" id="cbox">
       <h3>Jak wstawić stopkę w Outlooku?</h3>
-      <ol class="steps">
-        <li>Kliknij <b>"Kopiuj stopkę do schowka"</b> ponizej</li>
-        <li>Otwórz Outlook — <b>Plik — Konto — Podpisy — Dodaj podpis</b></li>
-        <li>Wprowadź nazwę podpisu np. <i>Stopka firmowa</i></li>
-        <li>Wklej całą treść stopki w pole edycji (<b>Ctrl+V</b> lub <b>Cmd+V</b>)</li>
-        <li>Kliknij <b>Zapisz</b></li>
-      </ol>
+      <div class="itabs">
+        <button class="itab on" id="itab-desk" onclick="switchTab('desk')">Outlook desktop</button>
+        <button class="itab" id="itab-web" onclick="switchTab('web')">Outlook w przeglądarce</button>
+      </div>
+      <div id="inst-desk">
+        <ol class="steps">
+          <li>Kliknij <b>"Kopiuj stopkę do schowka"</b> poniżej</li>
+          <li>W Outlooku: <b>Plik → Opcje → Poczta → Podpisy → Nowy</b></li>
+          <li>Wprowadź nazwę podpisu np. <i>Stopka firmowa</i></li>
+          <li>Wklej treść stopki w pole edycji (<b>Ctrl+V</b>)</li>
+          <li>W sekcji <b>"Wybierz podpis domyślny"</b> ustaw tę stopkę zarówno dla <b>Nowe wiadomości</b> jak i <b>Odpowiedzi/wiadomości przesłane dalej</b></li>
+          <li>Kliknij <b>OK</b></li>
+        </ol>
+      </div>
+      <div id="inst-web" style="display:none;">
+        <ol class="steps">
+          <li>Kliknij <b>"Kopiuj stopkę do schowka"</b> poniżej</li>
+          <li>W Outlooku web: <b>Ustawienia (koło zębate) → Poczta → Tworzenie i odpowiadanie → Podpis e-mail</b></li>
+          <li>Kliknij <b>"Dodaj podpis"</b> i wprowadź nazwę np. <i>Stopka firmowa</i></li>
+          <li>Wklej treść stopki w pole edycji (<b>Ctrl+V</b>)</li>
+          <li>Ustaw tę stopkę jako domyślną dla <b>Nowe wiadomości</b> oraz <b>Odpowiedzi/wiadomości przesłane dalej</b></li>
+          <li>Kliknij <b>Zapisz</b></li>
+        </ol>
+      </div>
       <button class="btn-copy" id="btn-copy">Kopiuj stopkę do schowka</button>
     </div>
     <div id="sig-store"></div>
@@ -194,6 +217,44 @@ g('btn-pho').addEventListener('click', function() {
   g('photofield').className = 'photofield show';
 });
 
+var photoDataUrl = null;
+
+g('f-photo').addEventListener('change', function() {
+  var file = this.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var canvas = document.createElement('canvas');
+    var size = 136;
+    canvas.width = size;
+    canvas.height = size;
+    var ctx = canvas.getContext('2d');
+    var img = new Image();
+    img.onload = function() {
+      ctx.clearRect(0, 0, size, size);
+      ctx.beginPath();
+      ctx.arc(size/2, size/2, size/2, 0, Math.PI * 2);
+      ctx.clip();
+      var scale = Math.max(size / img.width, size / img.height);
+      var w = img.width * scale;
+      var h = img.height * scale;
+      ctx.drawImage(img, (size - w) / 2, (size - h) / 2, w, h);
+      photoDataUrl = canvas.toDataURL('image/png');
+      g('photo-preview-img').src = photoDataUrl;
+      g('photo-preview').style.display = 'block';
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+});
+
+function switchTab(tab) {
+  g('inst-desk').style.display = tab === 'desk' ? 'block' : 'none';
+  g('inst-web').style.display = tab === 'web' ? 'block' : 'none';
+  g('itab-desk').className = tab === 'desk' ? 'itab on' : 'itab';
+  g('itab-web').className = tab === 'web' ? 'itab on' : 'itab';
+}
+
 function makeInitialsDataUrl(initials) {
   var canvas = document.createElement('canvas');
   canvas.width = 136;
@@ -215,13 +276,13 @@ function makeInitialsDataUrl(initials) {
   return canvas.toDataURL('image/png');
 }
 
-function buildSig(name, title, phone, email, photo, linkedin) {
+function buildSig(name, title, phone, email, linkedin) {
   var avatarInner;
-  if (photoMode === 'photo' && photo) {
-    avatarInner = '<img src="' + photo + '" alt="' + name + '" width="68" height="68" style="border-radius:50%;border:2px solid #952726;display:block;object-fit:cover;">';
+  if (photoMode === 'photo' && photoDataUrl) {
+    avatarInner = '<img src="' + photoDataUrl + '" alt="' + name + '" width="68" height="68" style="display:block;">';
   } else {
     var dataUrl = makeInitialsDataUrl(getInitials(name));
-    avatarInner = '<img src="' + dataUrl + '" alt="' + getInitials(name) + '" width="68" height="68" style="display:block;border-radius:50%;">';
+    avatarInner = '<img src="' + dataUrl + '" alt="' + getInitials(name) + '" width="68" height="68" style="display:block;">';
   }
 
   var avatar = linkedin
@@ -293,7 +354,6 @@ g('btn-gen').addEventListener('click', function() {
   var title = g('f-title').value.trim();
   var phone = g('f-phone').value.trim();
   var email = g('f-email').value.trim();
-  var photo = g('f-photo').value.trim();
   var linkedin = g('f-linkedin').value.trim();
 
   var ok = true;
@@ -303,7 +363,7 @@ g('btn-gen').addEventListener('click', function() {
 
   if (!ok) { alert('Uzupełnij wszystkie wymagane pola (oznaczone *).'); return; }
 
-  var html = buildSig(name, title, phone, email, photo, linkedin);
+  var html = buildSig(name, title, phone, email, linkedin);
   g('sig-preview').innerHTML = html;
   g('sig-store').innerHTML = html;
   g('prev-from').textContent = email || 'pracownik@alfasped.pl';
