@@ -194,14 +194,34 @@ g('btn-pho').addEventListener('click', function() {
   g('photofield').className = 'photofield show';
 });
 
+function makeInitialsDataUrl(initials) {
+  var canvas = document.createElement('canvas');
+  canvas.width = 136;
+  canvas.height = 136;
+  var ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, 136, 136);
+  ctx.beginPath();
+  ctx.arc(68, 68, 65, 0, Math.PI * 2);
+  ctx.fillStyle = '#dfcbca';
+  ctx.fill();
+  ctx.lineWidth = 5;
+  ctx.strokeStyle = '#952726';
+  ctx.stroke();
+  ctx.fillStyle = '#952726';
+  ctx.font = 'bold 48px Georgia, serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(initials, 68, 70);
+  return canvas.toDataURL('image/png');
+}
+
 function buildSig(name, title, phone, email, photo, linkedin) {
   var avatarInner;
   if (photoMode === 'photo' && photo) {
     avatarInner = '<img src="' + photo + '" alt="' + name + '" width="68" height="68" style="border-radius:50%;border:2px solid #952726;display:block;object-fit:cover;">';
   } else {
-    avatarInner = '<table cellpadding="0" cellspacing="0" border="0"><tr>'
-      + '<td width="68" height="68" style="width:68px;height:68px;border-radius:50%;border:2px solid #952726;background-color:#dfcbca;text-align:center;vertical-align:middle;font-size:22px;font-weight:bold;color:#952726;font-family:Georgia,serif;">'
-      + getInitials(name) + '</td></tr></table>';
+    var dataUrl = makeInitialsDataUrl(getInitials(name));
+    avatarInner = '<img src="' + dataUrl + '" alt="' + getInitials(name) + '" width="68" height="68" style="display:block;border-radius:50%;">';
   }
 
   var avatar = linkedin
