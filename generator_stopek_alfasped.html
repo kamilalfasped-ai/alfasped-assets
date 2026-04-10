@@ -80,8 +80,8 @@ body { font-family: Arial, sans-serif; background: #f5f5f5; color: #333; }
       <input type="text" id="f-phone" placeholder="+48 ___ ___ ___" maxlength="15">
     </div>
     <div class="field">
-      <label>Adres e-mail (uzupełnia się automatycznie)</label>
-      <input type="text" id="f-email" placeholder="imie.nazwisko@alfasped.pl" readonly>
+      <label>Adres e-mail (uzupełnia się automatycznie, możesz edytować)</label>
+      <input type="text" id="f-email" placeholder="imie.nazwisko@alfasped.pl">
     </div>
     <div class="field">
       <label>LinkedIn (opcjonalne)</label>
@@ -158,12 +158,12 @@ var photoMode = 'initials';
 function g(id) { return document.getElementById(id); }
 
 function toSlug(name) {
-  var parts = name.trim().toLowerCase()
-    .replace(/a/g,'a').replace(/e/g,'e').replace(/o/g,'o')
-    .replace(/s/g,'s').replace(/l/g,'l').replace(/z/g,'z')
-    .replace(/c/g,'c').replace(/n/g,'n')
-    .split(' ').filter(function(p){ return p.length > 0; });
-  if (parts.length < 2) return '';
+  var map = {'ą':'a','ć':'c','ę':'e','ł':'l','ń':'n','ó':'o','ś':'s','ź':'z','ż':'z',
+             'Ą':'a','Ć':'c','Ę':'e','Ł':'l','Ń':'n','Ó':'o','Ś':'s','Ź':'z','Ż':'z'};
+  var clean = name.trim().toLowerCase().split('').map(function(c){ return map[c] || c; }).join('');
+  var parts = clean.split(' ').filter(function(p){ return p.length > 0; });
+  if (parts.length === 0) return '';
+  if (parts.length === 1) return parts[0] + '@alfasped.pl';
   return parts[0] + '.' + parts[parts.length - 1] + '@alfasped.pl';
 }
 
@@ -174,10 +174,18 @@ function getInitials(name) {
   return (parts[0][0] + parts[parts.length-1][0]).toUpperCase();
 }
 
+var emailManuallyEdited = false;
+
+g('f-email').addEventListener('input', function() {
+  emailManuallyEdited = true;
+});
+
 g('f-name').addEventListener('input', function() {
-  var email = toSlug(this.value);
-  g('f-email').value = email;
-  g('prev-from').textContent = email || 'pracownik@alfasped.pl';
+  if (!emailManuallyEdited) {
+    var email = toSlug(this.value);
+    g('f-email').value = email;
+    g('prev-from').textContent = email || 'pracownik@alfasped.pl';
+  }
 });
 
 g('f-phone').addEventListener('focus', function() {
