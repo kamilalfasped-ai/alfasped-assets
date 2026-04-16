@@ -87,6 +87,15 @@ body { font-family: Arial, sans-serif; background: #f5f5f5; color: #333; }
       <label>LinkedIn (opcjonalne)</label>
       <input type="text" id="f-linkedin" placeholder="https://www.linkedin.com/in/...">
     </div>
+    <div class="slabel">Telefon działu (opcjonalne)</div>
+    <div class="field">
+      <label>Nazwa działu</label>
+      <input type="text" id="f-dept-name" placeholder="np. Dział Spedycji">
+    </div>
+    <div class="field">
+      <label>Numer telefonu działu (wpisz 9 cyfr)</label>
+      <input type="text" id="f-dept-phone" placeholder="+48 ___ ___ ___" maxlength="15">
+    </div>
 
     <div class="slabel">Zdjęcie (opcjonalne)</div>
     <div class="ptoggle">
@@ -211,6 +220,29 @@ g('f-phone').addEventListener('input', function() {
   this.value = fmt;
 });
 
+g('f-dept-phone').addEventListener('focus', function() {
+  if (!this.value) this.value = '+48 ';
+});
+
+g('f-dept-phone').addEventListener('blur', function() {
+  if (this.value === '+48 ' || this.value === '+48') this.value = '';
+});
+
+g('f-dept-phone').addEventListener('keydown', function(e) {
+  if ((e.key === 'Backspace' || e.key === 'Delete') && this.value.length <= 4) {
+    e.preventDefault();
+  }
+});
+
+g('f-dept-phone').addEventListener('input', function() {
+  var raw = this.value.replace('+48', '').replace(/\D/g,'').substring(0,9);
+  var fmt = '+48';
+  if (raw.length > 0) fmt += ' ' + raw.substring(0,3);
+  if (raw.length > 3) fmt += ' ' + raw.substring(3,6);
+  if (raw.length > 6) fmt += ' ' + raw.substring(6,9);
+  this.value = fmt;
+});
+
 g('btn-ini').addEventListener('click', function() {
   photoMode = 'initials';
   g('btn-ini').className = 'on';
@@ -284,7 +316,7 @@ function makeInitialsDataUrl(initials) {
   return canvas.toDataURL('image/png');
 }
 
-function buildSig(name, title, phone, email, linkedin) {
+function buildSig(name, title, phone, email, linkedin, deptName, deptPhone) {
   var avatarInner;
   if (photoMode === 'photo' && photoDataUrl) {
     avatarInner = '<img src="' + photoDataUrl + '" alt="' + name + '" width="68" height="68" style="display:block;">';
@@ -342,7 +374,9 @@ function buildSig(name, title, phone, email, linkedin) {
     + '<span style="font-size:12px;"><span style="color:#952726;font-weight:bold;">www</span> <a href="http://www.alfasped.pl" style="color:#952726;text-decoration:none;margin-left:4px;">www.alfasped.pl</a></span>'
     + '</td>'
     + liRow
-    + '</tr></table></td></tr>'
+    + '</tr>'
+    + (deptName && deptPhone ? '<tr><td colspan="2" style="vertical-align:middle;padding-bottom:4px;padding-top:2px;"><span style="font-size:12px;color:#555555;"><span style="color:#952726;font-weight:bold;">' + deptName + '</span><span style="margin-left:4px;">' + deptPhone + '</span></span></td></tr>' : '')
+    + '</table></td></tr>'
 
     + '<tr><td style="border-top:1px solid #dfcbca;padding-top:10px;padding-bottom:6px;">'
     + '<div style="font-size:10px;color:#aaaaaa;line-height:1.7;">'
@@ -366,6 +400,9 @@ g('btn-gen').addEventListener('click', function() {
   var phone = g('f-phone').value.trim();
   var email = g('f-email').value.trim();
   var linkedin = g('f-linkedin').value.trim();
+  var deptName = g('f-dept-name').value.trim();
+  var deptPhone = g('f-dept-phone').value.trim();
+  if (deptPhone === '+48') deptPhone = '';
 
   var ok = true;
   if (!name)  { g('f-name').className = 'err';  ok = false; } else { g('f-name').className = ''; }
@@ -374,7 +411,7 @@ g('btn-gen').addEventListener('click', function() {
 
   if (!ok) { alert('Uzupełnij wszystkie wymagane pola (oznaczone *).'); return; }
 
-  var html = buildSig(name, title, phone, email, linkedin);
+  var html = buildSig(name, title, phone, email, linkedin, deptName, deptPhone);
   g('sig-preview').innerHTML = html;
   g('sig-store').innerHTML = html;
   g('prev-from').textContent = email || 'pracownik@alfasped.pl';
